@@ -2,9 +2,13 @@
   "name": "Scrape-the-News",
   "version": "1.0.0",
   "description": "A web app that lets users view and leave comments on the latest news scraped from article",
-  "main": "index.js",
+  "main": "server.js",
+  "engines": {
+    "node": "10.16.3"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",

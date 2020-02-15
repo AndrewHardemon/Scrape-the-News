@@ -1,6 +1,7 @@
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 const express = require("express");
 const mongoose = require("mongoose");
+var exphbs = require("express-handlebars");
 
 //Express
 const app = express();
@@ -17,16 +18,24 @@ mongoose.connect(MONGODB_URI);
 
 // Requires
 require("./public/js/scrape.js");
+// require("./routes/htmlRoutes.js")(app);
 const db = require("./models");
 
+//Handlebars
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+app.get("/", function(req, res) {
+  res.render('index');
+});
 //Create User (add way to put in name later)
-db.User.create({ name: "Bob"})
-  .then(function(dbUser){
-    console.log(dbUser);
-  })
-  .catch(function(err){
-    console.log(err.message);
-  })
+// db.User.create({ name: "Bob"})
+//   .then(function(dbUser){
+//     console.log(dbUser);
+//   })
+//   .catch(function(err){
+//     console.log(err.message);
+//   })
 
 //Routes
 

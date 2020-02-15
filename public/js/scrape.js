@@ -7,8 +7,6 @@ axios.get("https://www.nytimes.com/").then(function(response){
 
   const $ = cheerio.load(response.data);
 
-  var results = [];
-
   //Grab Headline
   $("div.assetWrapper").each(function(i, element){
     const headline = $(element).find("h2").text();
@@ -19,13 +17,13 @@ axios.get("https://www.nytimes.com/").then(function(response){
 
     const image = $(element).find("img").attr("src");
 
-    results.push({
-      headline: headline,
-      summary: summary,
-      link: link,
-      image: image
-    })
+    //Create new Article using the result
+    db.Article.create(result)
+      .then(dbArticle => console.log(dbArticle))
+      .catch(err => console.log(err))
   });
-
+  
+  //Send message to client
+  res.send("Scrape Complete");
   console.log(results);
 })
