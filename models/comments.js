@@ -7,14 +7,24 @@ var CommentSchema = new Schema({
     type: String,
     required: true
   },
+  commentCreated: {
+    type: Date,
+    default: Date.now
+  },
   user: [
     {
       type: Schema.Types.ObjectId,
       ref: "User"
     }
+  ],
+  article: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Article"
+    }
   ]
 });
 
-var Comment = mongoose.model("Comment", CommentSchema);
+var Comments = mongoose.model("Comments", CommentSchema);
 
-module.exports = Comment;
+module.exports = Comments;

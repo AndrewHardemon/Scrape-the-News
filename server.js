@@ -5,8 +5,6 @@ var exphbs = require("express-handlebars");
 // Other
 const cheerio = require("cheerio");
 const axios = require("axios");
-
-
 //Express
 const app = express();
 
@@ -17,7 +15,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 //Connect to MongoDB
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/articledb";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/articledb";
 mongoose.connect(MONGODB_URI);
 
 // Requires
@@ -25,23 +23,25 @@ require("./public/js/scrape.js");
 // require("./public/js/app.js");
 require("./routes/htmlRoutes.js")(app);
 const db = require("./models");
-var User  = require("./models/user.js")
+var User = require("./models/user.js")
+var Comments = require("./models/comments.js")
+// var Article = require("./models/article.js")
 
 //Handlebars
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-//Create User (add way to put in name later)
-// db.User.create({ name: "Bob"})
-//   .then(function(dbUser){
-//     console.log(dbUser);
+// Create User (add way to put in name later)
+// db.Comment.create({ comment: "Bob"})
+//   .then(function(dbComment){
+//     console.log(dbComment);
 //   })
 //   .catch(function(err){
 //     console.log(err.message);
 //   })
 
-//Scrape
+// Scrape
 
 //The website we're grabbing from 
 axios.get("https://www.nytimes.com/").then(function(response){
@@ -82,6 +82,28 @@ app.get("/articles", function(req, res){
     .catch(err => {res.json(err)});
 });
 
+
+app.post("/submitComment", function(req, res){
+  console.log(req.body);
+  var comment = new Comments({comment: req.body.comment});
+  db.Comments.create({comment: req.body.comment})
+    .then(dbComments => {res.json(dbComments)})
+    .catch(err => {res.json(err)})
+});
+
+app.get("/articles/:id", function(req, res){
+  db.Article.findOne({ _id: req.params.id })
+    .populate("comment")
+    .then(dbArticle => {res.json(dbArticle)})
+    .catch(err => {res.json(err)})
+})
+
+app.post("/articles/:id", function(req, res){
+  db.Comments.create(req.body)
+    .then(dbComments => {return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComments._id}, {new:true})})
+    .then(dbArticle => {res.json(dbArticle)})
+    .catch(err => {res.json(err)})
+})
 
 
 
