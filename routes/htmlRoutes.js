@@ -4,15 +4,15 @@ module.exports = function(app) {
     res.render('index');
   });
 
-  // app.get("/about-me", function(req, res) {
-  //   res.render("about");
-  // });
+  app.get("/home", function(req, res) {
+    res.render("home");
+  });
 
   // app.get("/projects", function(req, res) {
   //   res.render("projects");
   // });
   
-  app.get("*", function(req, res) {
-    res.render("404");
-  });
+  // app.get("*", function(req, res) {
+  //   res.render("404");
+  // });
 };

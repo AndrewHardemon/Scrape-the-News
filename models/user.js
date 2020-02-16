@@ -6,7 +6,12 @@ var UserSchema = new Schema({
 
   name: {
     type: String,
+    required: true,
     unique: true
+  },
+  userCreated: {
+    type: Date,
+    default: Date.now
   },
   comments: [
     {
