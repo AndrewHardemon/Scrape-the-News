@@ -19,25 +19,34 @@ $.getJSON("/articles", function(data){
 `)}
 })
 
-// action="/submitComment" method="post"
-$.getJSON("/submit", function(data){
-  console.log(`This is the comment data:
-              ${data}`)
-  $("#yourComment").append(`<p id="theName" value=${data[(data.length-1)]._id}>${data[(data.length-1)].name}</p>`)
-})
+// // action="/submitComment" method="post"
 
 
-// $(document).on("click", "articleComments", function() {
-//   $.ajax({
-//     method: "GET",
-//     url: "/articles/" + thisId
-//   }).then(data => {
-//     console.log("see if this works")
-//     console.log(data)
-//     console.log(data.comment)
-//     $("#allComments").append(`<h5>${data.comment}</h5>`)
-//   })
-// });
+
+$(document).on("click", "#articleComments", function() {
+
+  $(".allComments").empty();
+  var thisId  = $(this).attr("data-id")
+  console.log(thisId)
+  
+  $.ajax({
+    method: "GET",
+    url: "/articles/" + thisId
+  }).then(data => {
+    console.log("see if this works")
+    console.log(data)
+    console.log(data.comments)
+    for(let i = 0; i < data.comments.length; i++){
+      $(".allComments").append(`<h5 id="commentSection">${data.comments[i].comment}</h5>`)
+    }
+    // $(".allComments").append(`<h5 id="commentSection"></h5>`)
+    // if(data.comments){
+    //   for(let i = 0; i < data.comments.length; i++){
+    //     $("#commentSection").val(data.comments[i].comment)
+    //   }
+    // }
+  })
+});
 
 
 $(document).on("click", "#submitComment", function(event) {
@@ -48,25 +57,26 @@ $(document).on("click", "#submitComment", function(event) {
   var thisId = $("#articleComments").attr("data-id");
   console.log(thisId)
   console.log($("#yourComment").val())
+  console.log($("#commentSection").val())
+
+  // $.ajax({
+  //   method: "GET",
+  //   url: "/gettingComments"
+  // }).then(commentData => {
+  // console.log(commentData)
 
   $.ajax({
-    method: "GET",
+    method: "POST",
     url: "/articles/" + thisId,
     data: {
       comment: $("#yourComment").val(),
-      commentCreated: Date.now,
-      // user: "JEFF",
-      article: thisId
     }
   }).then(data => {
     console.log("see if this works")
     console.log(data)
-
-
+    $(".allComments").empty();
   })
-
-
-
+// })
 
 
 

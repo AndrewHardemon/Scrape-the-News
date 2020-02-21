@@ -10,13 +10,19 @@ var CommentSchema = new Schema({
   commentCreated: {
     type: Date,
     default: Date.now
-  },
-  user: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User"
-    }
-  ]
+  }
+  // user: [
+  //   {
+  //     type: Schema.Types.ObjectId,
+  //     ref: "User"
+  //   }
+  // ],
+  // article: [
+  //   {
+  //     type: Schema.Types.ObjectId,
+  //     ref: "Article"
+  //   }
+  // ]
 });
 
 var Comments = mongoose.model("Comments", CommentSchema);

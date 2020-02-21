@@ -83,13 +83,20 @@ app.get("/articles", function(req, res){
 });
 
 
-// app.post("/submitComment", function(req, res){
+// app.post("/gettingComments", function(req, res){
 //   console.log(req.body);
 //   var comment = new Comments({comment: req.body.comment});
 //   db.Comments.create({comment: req.body.comment})
 //     .then(dbComments => res.json(dbComments))
 //     .catch(err => res.json(err))
 //     // return res.redirect('/home');
+// });
+
+// //Route for getting Articles
+// app.get("/gettingComments", function(req, res){
+//   db.Comments.find({})
+//     .then(dbComments => res.json(dbComments))
+//     .catch(err => res.json(err));
 // });
 
 app.get("/articles/:id", function(req, res){
@@ -101,7 +108,9 @@ app.get("/articles/:id", function(req, res){
 
 app.post("/articles/:id", function(req, res){
   db.Comments.create(req.body)
-    .then(dbComments => {return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComments._id}, {new:true})})
+    .then(function(dbComments){
+      return db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {comments: dbComments._id}}, {new:true});
+    })
     .then(dbArticle => res.json(dbArticle))
     .catch(err => res.json(err))
 })
