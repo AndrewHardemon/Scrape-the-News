@@ -22,12 +22,14 @@ var ArticleSchema = new Schema({
     type: String,
     unique: true
   },
-  comments: {
-    type: Schema.Types.ObjectId,
-    ref: "Comments"
-  }
-  // Add comments section
-});
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comments"
+    }
+  ]
+  // Add comments section 
+}); 
 
 var Article = mongoose.model("Article", ArticleSchema);
 

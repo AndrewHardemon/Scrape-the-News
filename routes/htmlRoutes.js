@@ -8,11 +8,4 @@ module.exports = function(app) {
     res.render("home");
   });
 
-  // app.get("/projects", function(req, res) {
-  //   res.render("projects");
-  // });
-  
-  // app.get("*", function(req, res) {
-  //   res.render("404");
-  // });
 };

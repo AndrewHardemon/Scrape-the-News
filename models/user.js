@@ -12,13 +12,7 @@ var UserSchema = new Schema({
   userCreated: {
     type: Date,
     default: Date.now
-  },
-  comments: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Comments"
-    }
-  ]
+  }
 });
 
 var User = mongoose.model("User", UserSchema);

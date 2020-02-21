@@ -70,39 +70,40 @@ app.post("/submit", function(req, res){
   console.log(req.body.username);
   var user = new User(req.body);
   db.User.create({name: req.body.username})
-    .then(dbUser => {res.json(dbUser)})
-    .catch(err => {res.json(err)})
+    .then(dbUser => res.json(dbUser))
+    .catch(err => res.json(err))
   return res.redirect('/home');
 });
 
 //Route for getting Articles
 app.get("/articles", function(req, res){
   db.Article.find({})
-    .then(dbNote => {res.json(dbNote)})
-    .catch(err => {res.json(err)});
+    .then(dbNote => res.json(dbNote))
+    .catch(err => res.json(err));
 });
 
 
-app.post("/submitComment", function(req, res){
-  console.log(req.body);
-  var comment = new Comments({comment: req.body.comment});
-  db.Comments.create({comment: req.body.comment})
-    .then(dbComments => {res.json(dbComments)})
-    .catch(err => {res.json(err)})
-});
+// app.post("/submitComment", function(req, res){
+//   console.log(req.body);
+//   var comment = new Comments({comment: req.body.comment});
+//   db.Comments.create({comment: req.body.comment})
+//     .then(dbComments => res.json(dbComments))
+//     .catch(err => res.json(err))
+//     // return res.redirect('/home');
+// });
 
 app.get("/articles/:id", function(req, res){
   db.Article.findOne({ _id: req.params.id })
-    .populate("comment")
-    .then(dbArticle => {res.json(dbArticle)})
-    .catch(err => {res.json(err)})
+    .populate("comments")
+    .then(dbArticle => res.json(dbArticle))
+    .catch(err => res.json(err))
 })
 
 app.post("/articles/:id", function(req, res){
   db.Comments.create(req.body)
     .then(dbComments => {return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComments._id}, {new:true})})
-    .then(dbArticle => {res.json(dbArticle)})
-    .catch(err => {res.json(err)})
+    .then(dbArticle => res.json(dbArticle))
+    .catch(err => res.json(err))
 })
 
 
