@@ -75,10 +75,17 @@ app.post("/submit", function(req, res){
   return res.redirect('/home');
 });
 
+
+app.get("/submit", function(req, res){
+  db.User.find({})
+    .then(dbUser => res.json(dbUser))
+    .catch(err => res.json(err));
+});
+
 //Route for getting Articles
 app.get("/articles", function(req, res){
   db.Article.find({})
-    .then(dbNote => res.json(dbNote))
+    .then(dbArticle => res.json(dbArticle))
     .catch(err => res.json(err));
 });
 

@@ -20,7 +20,11 @@ $.getJSON("/articles", function(data){
 })
 
 // // action="/submitComment" method="post"
-
+$.getJSON("/submit", function(username){
+  console.log(username)
+  console.log(username[username.length-1].name)
+  $("#yourComment").attr("data-id", username[username.length-1].name)
+})
 
 
 $(document).on("click", "#articleComments", function() {
@@ -37,7 +41,7 @@ $(document).on("click", "#articleComments", function() {
     console.log(data)
     console.log(data.comments)
     for(let i = 0; i < data.comments.length; i++){
-      $(".allComments").append(`<h5 id="commentSection">${data.comments[i].comment}</h5>`)
+      $(".allComments").append(`<h5 id="commentSection">${data.comments[i].user}: ${data.comments[i].comment}</h5>`)
     }
     // $(".allComments").append(`<h5 id="commentSection"></h5>`)
     // if(data.comments){
@@ -57,7 +61,7 @@ $(document).on("click", "#submitComment", function(event) {
   var thisId = $("#articleComments").attr("data-id");
   console.log(thisId)
   console.log($("#yourComment").val())
-  console.log($("#commentSection").val())
+  console.log($("#yourComment").attr("data-id"))
 
   // $.ajax({
   //   method: "GET",
@@ -69,7 +73,7 @@ $(document).on("click", "#submitComment", function(event) {
     method: "POST",
     url: "/articles/" + thisId,
     data: {
-      comment: $("#yourComment").val(),
+      comment: $("#yourComment").val()
     }
   }).then(data => {
     console.log("see if this works")
