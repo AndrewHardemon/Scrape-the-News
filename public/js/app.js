@@ -1,5 +1,6 @@
 //Get the articles as a JSON
 var dataLength = 0;
+var currentUser = "";
 
 $.getJSON("/articles", function(data){
   dataLength = data.length;
@@ -25,9 +26,10 @@ $.getJSON("/articles", function(data){
 // // action="/submitComment" method="post"
 $.getJSON("/submit", function(username){
   console.log(username)
-  console.log(username[username.length-1].name)
+  currentUser = username[username.length-1].name;
+  console.log(currentUser)
   for(let i = 0; i < dataLength; i++){
-    $(`#yourComment${i}`).attr("data-id", username[username.length-1].name)
+    $(`#yourComment${i}`).attr("data-id", currentUser)
   }
 })
 
@@ -48,7 +50,7 @@ $(document).on("click", "#articleComments", function() {
     for(let i = 0; i < data.comments.length; i++){
       $(".allComments").append(`
       <div class="col-md-12"><div class="row">
-      </h5><button data-id=${data.comments[i]._id} type="button" class="btn btn-danger deleteButton" style="height: 30px; width: 20px">X</button>
+      </h5><button id=${data.comments[i].user} data-id=${data.comments[i]._id} type="button" class="btn btn-danger deleteButton" style="height: 30px; width: 20px">X</button>
       <h5 id="commentSection">${data.comments[i].user}: ${data.comments[i].comment}
       </div></div>
       `)
@@ -97,7 +99,11 @@ $(document).on("click", "#submitComment", function(event) {
 $(document).on("click", ".deleteButton", function() {
 
   var selected = $(this).attr("data-id")
+  var userID = $(this).attr("id")
   console.log(selected)
+  console.log(userID)
+  console.log(currentUser)
+  if(userID === currentUser){
 
   $.ajax({
     type: "GET",
@@ -110,6 +116,10 @@ $(document).on("click", ".deleteButton", function() {
     $('.collapse').attr("class", "collapsing")
     $(".allComments").empty();
   })
+
+  } else {
+    $("#articleComments").text("Not Yours")
+  }
 
 })
 
