@@ -1,5 +1,8 @@
 //Get the articles as a JSON
+var dataLength = 0;
+
 $.getJSON("/articles", function(data){
+  dataLength = data.length;
   for(var i = 0; i < data.length; i++){
     $("#articles").append(`<div class=col-md-12></div>`)
     $("#articles").append(`<div class=row></div>`)
@@ -10,8 +13,8 @@ $.getJSON("/articles", function(data){
     $("#articles").append(`<img src='${data[i].image}' href='https://www.nytimes.com/${data[i].link}'></img><hr>`)
     $("#articles").append(`
     <form>
-      <input type="text" id="yourComment" name="comment" placeholder="Give your Opinon!">
-        <button><input type="submit" id="submitComment"></button>
+      <input type="text" id="yourComment${i}" name="comment" placeholder="Give your Opinon!">
+        <button><input type="submit" data-id="${data[i]._id}" id="submitComment"></button>
     </form><br>
     <p><button id="articleComments" data-id="${data[i]._id}" class="btn btn-primary" type="button" data-toggle="collapse" 
     data-target="#commentsSection${i}" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"> Comments </button></p>
@@ -23,7 +26,9 @@ $.getJSON("/articles", function(data){
 $.getJSON("/submit", function(username){
   console.log(username)
   console.log(username[username.length-1].name)
-  $("#yourComment").attr("data-id", username[username.length-1].name)
+  for(let i = 0; i < dataLength; i++){
+    $(`#yourComment${i}`).attr("data-id", username[username.length-1].name)
+  }
 })
 
 
@@ -54,25 +59,37 @@ $(document).on("click", "#articleComments", function() {
 
 $(document).on("click", "#submitComment", function(event) {
   event.preventDefault();
+  var Cval = "";
+  var Cdata = "";
+  var Cnum = 0;
 
-  var thisId = $("#articleComments").attr("data-id");
+  var thisId = $(this).attr("data-id");
   console.log(thisId)
-  console.log($("#yourComment").val())
-  console.log($("#yourComment").attr("data-id"))
+  for(let i = 0; i < dataLength; i++){
+    if($(`#yourComment${i}`).val()){
+      Cval = $(`#yourComment${i}`).val()
+      Cdata = $(`#yourComment${i}`).attr("data-id")
+      Cnum = i
+      console.log(Cval)
+      console.log(Cdata)
+    }
+  }
+
 
   $.ajax({
     method: "POST",
     url: "/articles/" + thisId,
     data: {
-      comment: $("#yourComment").val(),
-      user: $("#yourComment").attr("data-id")
+      comment: Cval,
+      user: Cdata
     }
   }).then(data => {
     console.log("see if this works")
     console.log(data)
-    $("#yourComment").val("");
+    $(`#yourComment${Cnum}`).val("");
     $('.collapse').attr("class", "collapsing")
     $(".allComments").empty();
+    $("#articleComments").text("Refreshed")
   })
 
 })
