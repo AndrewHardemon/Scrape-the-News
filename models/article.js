@@ -27,6 +27,12 @@ var ArticleSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: "Comments"
     }
+  ],
+  user: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
   ]
   // Add comments section 
 }); 

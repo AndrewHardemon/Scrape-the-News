@@ -41,7 +41,12 @@ $(document).on("click", "#articleComments", function() {
     console.log(data)
     console.log(data.comments)
     for(let i = 0; i < data.comments.length; i++){
-      $(".allComments").append(`<h5 id="commentSection">${data.comments[i].user}: ${data.comments[i].comment}</h5>`)
+      $(".allComments").append(`
+      <div class="col-md-12"><div class="row">
+      </h5><button type="button" class="btn btn-danger" style="height: 30px; width: 20px">X</button>
+      <h5 id="commentSection">${data.comments[i].user}: ${data.comments[i].comment}
+      </div></div>
+      `)
     }
     // $(".allComments").append(`<h5 id="commentSection"></h5>`)
     // if(data.comments){
@@ -73,7 +78,8 @@ $(document).on("click", "#submitComment", function(event) {
     method: "POST",
     url: "/articles/" + thisId,
     data: {
-      comment: $("#yourComment").val()
+      comment: $("#yourComment").val(),
+      user: $("#yourComment").attr("data-id")
     }
   }).then(data => {
     console.log("see if this works")

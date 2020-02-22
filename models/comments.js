@@ -11,12 +11,15 @@ var CommentSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  user: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User"
-    }
-  ]
+  user: {
+    type: String,
+  }
+  // user: [
+  //   {
+  //     type: Schema.Types.ObjectId,
+  //     ref: "User"
+  //   }
+  // ]
   // article: [
   //   {
   //     type: Schema.Types.ObjectId,
