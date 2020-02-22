@@ -1,14 +1,14 @@
-//Get the articles as a JSON
-var dataLength = 0;
+// Keeps track of current user
 var currentUser = "";
 
+//Get the articles as a JSON and display on page
 $.getJSON("/articles", function(data){
   dataLength = data.length;
   for(var i = 0; i < data.length; i++){
     $("#articles").append(`<div class=col-md-12></div>`)
     $("#articles").append(`<div class=row></div>`)
     $("#articles").append(`<div data-id='${data[i]._id}'></div>`)
-    $("#articles").append(`<h1>${data[i].headline}</h1>`)
+    $("#articles").append(`<h1 id="dataLength" data-id=${data.length}>${data[i].headline}</h1>`)
     $("#articles").append(`<h4>${data[i].summary}</h4>`)
     $("#articles").append(`<p>https://www.nytimes.com/${data[i].link}</p>`)
     $("#articles").append(`<img src='${data[i].image}' href='https://www.nytimes.com/${data[i].link}'></img><hr>`)
@@ -23,17 +23,23 @@ $.getJSON("/articles", function(data){
 `)}
 })
 
-// // action="/submitComment" method="post"
+// Get username and put username in all articles
 $.getJSON("/submit", function(username){
+  // Get data length to go through all articles
+  $.getJSON("/articles", function(data){
+  const dataLength = data.length;
   console.log(username)
   currentUser = username[username.length-1].name;
   console.log(currentUser)
+  console.log(dataLength)
+  // Give each article an unique id
   for(let i = 0; i < dataLength; i++){
     $(`#yourComment${i}`).attr("data-id", currentUser)
   }
+  })
 })
 
-
+// Click event for seeing comments
 $(document).on("click", "#articleComments", function() {
 
   $(".allComments").empty();
@@ -58,13 +64,14 @@ $(document).on("click", "#articleComments", function() {
   })
 });
 
-
+// Click event for submitting comments
 $(document).on("click", "#submitComment", function(event) {
   event.preventDefault();
   var Cval = "";
   var Cdata = "";
   var Cnum = 0;
 
+  // Find the right number for the article you're on
   var thisId = $(this).attr("data-id");
   console.log(thisId)
   for(let i = 0; i < dataLength; i++){
@@ -77,7 +84,7 @@ $(document).on("click", "#submitComment", function(event) {
     }
   }
 
-
+  //Add comment to Mongo and the page 
   $.ajax({
     method: "POST",
     url: "/articles/" + thisId,
@@ -93,9 +100,9 @@ $(document).on("click", "#submitComment", function(event) {
     $(".allComments").empty();
     $("#articleComments").text("Refreshed")
   })
-
 })
 
+//Click Even for deleting comments
 $(document).on("click", ".deleteButton", function() {
 
   var selected = $(this).attr("data-id")
@@ -103,20 +110,23 @@ $(document).on("click", ".deleteButton", function() {
   console.log(selected)
   console.log(userID)
   console.log(currentUser)
+
+  //If user is the current user
   if(userID === currentUser){
 
-  $.ajax({
-    type: "GET",
-    url: "/delete/" + selected,
-    success: function(response){
-      $(this).parent().remove();
-    }
-  }).then(data => {
-    console.log(data)
-    $('.collapse').attr("class", "collapsing")
-    $(".allComments").empty();
-  })
-
+    //Delete the specific comment
+    $.ajax({
+      type: "GET",
+      url: "/delete/" + selected,
+      success: function(response){
+        $(this).parent().remove();
+      }
+    }).then(data => {
+      console.log(data)
+      $('.collapse').attr("class", "collapsing")
+      $(".allComments").empty();
+    })
+  // Else change button to show its not yours
   } else {
     $("#articleComments").text("Not Yours")
   }
