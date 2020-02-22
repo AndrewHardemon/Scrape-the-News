@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 //Connect to MongoDB
-const MONGODB_URI = process.env.MONGODB_URI2 || "mongodb://localhost/articledb";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/articledb";
 mongoose.connect(MONGODB_URI);
 
 // Requires
@@ -124,9 +124,10 @@ app.post("/articles/:id", function(req, res){
 
 
 
-
+const port = process.env.PORT || 3000;
+const host = 'localhost' || '0.0.0.0';
 // Listen on port 3000
-app.listen(3000, function() {
+app.listen(port, host, function() {
   console.log("App running on port 3000!");
 });
 
