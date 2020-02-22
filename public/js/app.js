@@ -14,7 +14,7 @@ $.getJSON("/articles", function(data){
         <button><input type="submit" id="submitComment"></button>
     </form><br>
     <p><button id="articleComments" data-id="${data[i]._id}" class="btn btn-primary" type="button" data-toggle="collapse" 
-    data-target="#commentsSection${i}" aria-expanded="false" aria-controls="collapseExample"> Comments </button></p>
+    data-target="#commentsSection${i}" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"> Comments </button></p>
     <div class="collapse" id="commentsSection${i}" data-id="${data[i]._id}"><div class="allComments card card-body"></div></div><hr><br>
 `)}
 })
@@ -43,36 +43,22 @@ $(document).on("click", "#articleComments", function() {
     for(let i = 0; i < data.comments.length; i++){
       $(".allComments").append(`
       <div class="col-md-12"><div class="row">
-      </h5><button type="button" class="btn btn-danger" style="height: 30px; width: 20px">X</button>
+      </h5><button data-id=${data.comments[i]._id} type="button" class="btn btn-danger deleteButton" style="height: 30px; width: 20px">X</button>
       <h5 id="commentSection">${data.comments[i].user}: ${data.comments[i].comment}
       </div></div>
       `)
     }
-    // $(".allComments").append(`<h5 id="commentSection"></h5>`)
-    // if(data.comments){
-    //   for(let i = 0; i < data.comments.length; i++){
-    //     $("#commentSection").val(data.comments[i].comment)
-    //   }
-    // }
   })
 });
 
 
 $(document).on("click", "#submitComment", function(event) {
   event.preventDefault();
-// $("#articleComments").on("click", function(){
-  // $("#comments").empty();
 
   var thisId = $("#articleComments").attr("data-id");
   console.log(thisId)
   console.log($("#yourComment").val())
   console.log($("#yourComment").attr("data-id"))
-
-  // $.ajax({
-  //   method: "GET",
-  //   url: "/gettingComments"
-  // }).then(commentData => {
-  // console.log(commentData)
 
   $.ajax({
     method: "POST",
@@ -84,15 +70,29 @@ $(document).on("click", "#submitComment", function(event) {
   }).then(data => {
     console.log("see if this works")
     console.log(data)
+    $("#yourComment").val("");
+    $('.collapse').attr("class", "collapsing")
     $(".allComments").empty();
   })
-// })
-
-
 
 })
 
-// $.getJSON("/submitComment", function(data){
-//   for(var i = 0; i <data.length; i++){
-//     $(".allComments").append(`<p>${data[i].comment}<p>`);
-//   }
+$(document).on("click", ".deleteButton", function() {
+
+  var selected = $(this).attr("data-id")
+  console.log(selected)
+
+  $.ajax({
+    type: "GET",
+    url: "/delete/" + selected,
+    success: function(response){
+      $(this).parent().remove();
+    }
+  }).then(data => {
+    console.log(data)
+    $('.collapse').attr("class", "collapsing")
+    $(".allComments").empty();
+  })
+
+})
+

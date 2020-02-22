@@ -1,6 +1,7 @@
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 const express = require("express");
 const mongoose = require("mongoose");
+var mongojs = require("mongojs");
 var exphbs = require("express-handlebars");
 // Other
 const cheerio = require("cheerio");
@@ -120,6 +121,22 @@ app.post("/articles/:id", function(req, res){
     })
     .then(dbArticle => res.json(dbArticle))
     .catch(err => res.json(err))
+})
+
+app.get("/delete/:id", function(req, res){
+  db.Comments.deleteOne({
+    _id: mongojs.ObjectID(req.params.id)
+    },
+    function(error, removed){
+      if (error) {
+        console.log(error);
+        res.send(error);
+      } else {
+        console.log(removed);
+        res.send(removed);
+      }
+    }
+  )
 })
 
 
